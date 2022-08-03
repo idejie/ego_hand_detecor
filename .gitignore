@@ -226,3 +226,5 @@ caffe2.egg-info
 # cython generated files
 lib/model/utils/bbox.c
 lib/pycocotools/_mask.c
+*_det
+all_frames_final.txt

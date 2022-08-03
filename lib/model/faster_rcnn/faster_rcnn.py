@@ -69,12 +69,14 @@ class _fasterRCNN(nn.Module):
             rois_outside_ws = Variable(rois_outside_ws.view(-1, rois_outside_ws.size(2)))
 
         else:
-            rois_label = None
+            roi_data = self.RCNN_proposal_target(rois, gt_boxes, num_boxes, box_info)
+            rois_proposal, rois_label, rois_target, rois_inside_ws, rois_outside_ws, box_info = roi_data
+            # rois_label = None
             rois_target = None
             rois_inside_ws = None
             rois_outside_ws = None
-            rpn_loss_cls = 0
-            rpn_loss_bbox = 0
+            rpn_loss_cls = rpn_loss_cls
+            rpn_loss_bbox = rpn_loss_bbox
         
 
         rois = Variable(rois)
@@ -130,7 +132,8 @@ class _fasterRCNN(nn.Module):
         cls_prob = cls_prob.view(batch_size, rois.size(1), -1)
         bbox_pred = bbox_pred.view(batch_size, rois.size(1), -1)
 
-        return rois, cls_prob, bbox_pred, rpn_loss_cls, rpn_loss_bbox, RCNN_loss_cls, RCNN_loss_bbox, rois_label, loss_list
+        # print('rois_target',rois_target.shape)
+        return pooled_feat,rois, cls_prob, bbox_pred, rpn_loss_cls, rpn_loss_bbox, RCNN_loss_cls, RCNN_loss_bbox, rois_label, loss_list
 
     def enlarge_bbox(self, im_info, rois, ratio=0.5):
         rois_width, rois_height = (rois[:,:,3]-rois[:,:,1]), (rois[:,:,4]-rois[:,:,2])
